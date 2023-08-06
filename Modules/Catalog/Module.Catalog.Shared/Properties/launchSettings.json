@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "Module.Catalog.Shared": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:63065;http://localhost:63074"
+    }
+  }
+}

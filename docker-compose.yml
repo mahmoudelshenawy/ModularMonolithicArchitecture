@@ -1,0 +1,68 @@
+version: '3.4'
+
+networks:
+  backend:
+
+services:
+  # Sql Server 
+  modularmonolithdb:
+    container_name: modularmonolith-db
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=password@12345#
+    networks:
+      - backend
+    ports:
+      - 18001:1433
+    volumes:
+      - ./.containers/database:/var/opt/mssql/data
+
+  #Web api
+  api:
+    container_name: modularmonolith-api
+    image: ${DOCKER_REGISTRY-}api
+    networks:
+      - backend
+    build:
+      context: .
+      dockerfile: Host/Api/Dockerfile
+    environment:
+      - DB_HOST=modularmonolithdb
+      - DB_NAME=mg_modular_monolith
+      - DB_SA_PASSWORD=password@12345#
+
+   #rabbit-mq
+  modularmonolithmq:
+    image: rabbitmq:3.11.7-management
+    container_name: modularmonolithmq
+    hostname: modularmonolith-queue
+    volumes:
+      - ./.containers/queue/data/:/var/lib/rabbitmq
+      - ./.containers/queue/log/:/var/log/rabbitmq 
+    environment:
+        RABBITMQ_DEFAULT_USER: guest
+        RABBITMQ_DEFAULT_PASS: guest
+    ports:
+      - 5672:5672
+      - 15672:15672
+    networks:
+      - backend
+# Postgres Db
+  #modularmonolithdbpostgres:
+  #  image: postgres:latest
+  #  container_name: modularmonolithdbpostgres
+  #  networks:
+  #    - backend
+  #  environment:
+  #    - POSTGRES_DB=mg_modular_monolith
+  #    - POSTGRES_USER=postgres
+  #    - POSTGRES_PASSWORD=postgres
+  #  ports:
+  #    - 5432:5432
+  #  volumes:
+  #    - ./.containers/database:/var/lib/postgresql/data
+
+
+
+

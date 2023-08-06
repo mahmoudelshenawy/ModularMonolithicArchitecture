@@ -1,0 +1,4 @@
+dotnet-ef migrations add "InitialCreationOfDatabase"
+--startup-project ../../../Host/Api 
+-o Persistence/Migrations 
+--context CatalogDbContext
